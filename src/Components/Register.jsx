@@ -3,34 +3,62 @@ import React from "react";
 import app from "../firebase/firebase.init";
 
 const Register = () => {
-    const [error , setError] = React.useState("");
-    const [success , setSuccess] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [success, setSuccess] = React.useState("");
 
   const auth = getAuth(app);
-  
+
+  // Handling Form Submit
   const handleSubmit = (e) => {
+    // Preventing Default Behavior of Form
     e.preventDefault();
     setSuccess("");
+    setError("");
+    // Getting Values from Form
     const password = e.target.password.value;
     const email = e.target.email.value;
+    // Password Validation using Regular Expression
+    if (!/(?=.*[A-Z])/.test(password)) {
+      setError("Password must be One Uppercase");
+      return;
+    } else if(!/(?=.*[0-9])/.test(password)) {
+      setError("Password must be One Number");
+      return;
+    } else if(!/(?=.*[!@#$%^&*])/.test(password)) {
+      setError("Password must be One Special Character");
+      return;
+    } else if(password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+    // User Registration
     createUserWithEmailAndPassword(auth, email, password)
-    .then((result) => {
+      .then((result) => {
         console.log(result.user);
         setError("");
         e.target.reset();
         setSuccess("Registration Successful");
-    }).catch((error) => {
+      })
+      .catch((error) => {
         setError(error.message);
-    });
+      });
   };
 
+  // JSX
   return (
     <div>
       <h3>Register</h3>
       <form onSubmit={handleSubmit}>
-        <input required type="email" name="email" id="email" placeholder="Your Email" />
+        <input
+          required
+          type="email"
+          name="email"
+          id="email"
+          placeholder="Your Email"
+        />
         <br />
-        <input required
+        <input
+          required
           type="password"
           name="password"
           id="password"

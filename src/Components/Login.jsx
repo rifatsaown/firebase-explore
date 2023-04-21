@@ -10,11 +10,12 @@ import app from "../firebase/firebase.init";
 
 const Login = () => {
   const [user, setUser] = React.useState(null);
-
+  // Getting Firebase Auth , Google Auth Provider and Github Auth Provider
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
 
+  // Handling Google Login
   const handleGoogleLogin = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
@@ -27,6 +28,7 @@ const Login = () => {
       });
   };
 
+  // Handling Github Login
   const handleGithubLogin = () => {
     signInWithPopup(auth, githubProvider)
       .then((result) => {
@@ -38,7 +40,7 @@ const Login = () => {
         console.log(errorCode, errorMessage);
       });
   };
-
+  // Handling Sign Out
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
@@ -49,6 +51,7 @@ const Login = () => {
       });
   };
 
+  // JSX
   return (
     <div>
       {user ? (
