@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
 import React from "react";
 import app from "../firebase/firebase.init";
 
@@ -17,6 +17,7 @@ const Register = () => {
     // Getting Values from Form
     const password = e.target.password.value;
     const email = e.target.email.value;
+    const name = e.target.name.value;
     // Password Validation using Regular Expression
     if (!/(?=.*[A-Z])/.test(password)) {
       setError("Password must be One Uppercase");
@@ -38,17 +39,34 @@ const Register = () => {
         setError("");
         e.target.reset();
         setSuccess("Registration Successful");
+        verifyEmail(result.user);
       })
       .catch((error) => {
         setError(error.message);
       });
   };
 
+  const verifyEmail = (user) => {
+    sendEmailVerification(user)
+      .then(() => {
+        console.log("Email Sent");
+        alert("Email Sent , Please Verify");
+      });
+  }
+
   // JSX
   return (
     <div>
       <h3>Register</h3>
       <form onSubmit={handleSubmit}>
+      <input
+          required
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Your Name"
+        />
+        <br />
         <input
           required
           type="email"
