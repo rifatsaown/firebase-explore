@@ -1,4 +1,9 @@
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import React from "react";
 import app from "../firebase/firebase.init";
 
@@ -22,13 +27,13 @@ const Register = () => {
     if (!/(?=.*[A-Z])/.test(password)) {
       setError("Password must be One Uppercase");
       return;
-    } else if(!/(?=.*[0-9])/.test(password)) {
+    } else if (!/(?=.*[0-9])/.test(password)) {
       setError("Password must be One Number");
       return;
-    } else if(!/(?=.*[!@#$%^&*])/.test(password)) {
+    } else if (!/(?=.*[!@#$%^&*])/.test(password)) {
       setError("Password must be One Special Character");
       return;
-    } else if(password.length < 6) {
+    } else if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
     }
@@ -40,26 +45,38 @@ const Register = () => {
         e.target.reset();
         setSuccess("Registration Successful");
         verifyEmail(result.user);
+        updateName(result.user ,name);
       })
       .catch((error) => {
         setError(error.message);
       });
   };
 
-  const verifyEmail = (user) => {
-    sendEmailVerification(user)
+  const updateName = (user , name) => {
+    updateProfile(user, {
+      displayName: name,
+    })
       .then(() => {
-        console.log("Email Sent");
-        alert("Email Sent , Please Verify");
+        console.log("Name Updated");
+      })
+      .catch((error) => {
+        console.log(error.message);
       });
-  }
+  };
+
+  const verifyEmail = (user) => {
+    sendEmailVerification(user).then(() => {
+      console.log("Email Sent");
+      alert("Email Sent , Please Verify");
+    });
+  };
 
   // JSX
   return (
     <div>
       <h3>Register</h3>
       <form onSubmit={handleSubmit}>
-      <input
+        <input
           required
           type="text"
           name="name"

@@ -18,6 +18,7 @@ const Login = () => {
   const [error, setError] = React.useState("");
 
   const emailRef = React.useRef("");
+  const passwordRef = React.useRef("");
   // Getting Firebase Auth , Google Auth Provider and Github Auth Provider
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
@@ -76,6 +77,7 @@ const Login = () => {
     // Login with Email and Password
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
+        console.log(result.user);
         result.user.emailVerified
           ? setUser(result.user) && signOut(auth)
           : setError("Please Verify Your Email");
@@ -102,6 +104,15 @@ const Login = () => {
     }
   }
 
+  const handleCheakBox = (e) => {
+    const pass = passwordRef.current;
+    if (e.target.checked) {
+      pass.type = "text";
+    } else {
+      pass.type = "password";
+    }
+  }
+
 
   // JSX
   return (
@@ -125,10 +136,14 @@ const Login = () => {
               type="password"
               name="password"
               id="password"
+              ref={passwordRef}
               placeholder="Your Password"
               required
             />
             <br />
+            <input onChange={handleCheakBox} type="checkbox" name="showPass" id="showPass" />
+            <label htmlFor="showPass">Show Password</label>
+            <br/>
             <p style={{ color: "red" }}>{error}</p>
             <input type="submit" value="Log In" />
           </form>
